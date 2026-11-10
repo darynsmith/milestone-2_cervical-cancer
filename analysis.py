@@ -45,13 +45,20 @@ print("Biopsy positivity rate:", biopsy_rate)
 # display as a percent
 print("Biopsy positivity percent:", biopsy_rate * 100)
 
-# create a bar chart showing the distribution of biopsy results
-df["Biopsy"].value_counts().plot(kind="bar")
+# create a pie chart showing the distribution of biopsy results
+biopsy_counts = df["Biopsy"].value_counts()
 
-# add chart labels and titles
+plt.figure(figsize=(6, 6))
+
+plt.pie(
+    biopsy_counts,
+    labels=["Negative", "Positive"],
+    autopct="%1.1f%%",
+    startangle=90,
+    colors=["#4C72B0", "#C44E52"],
+)
+# add the title
 plt.title("Biopsy Results")
-plt.xlabel("Biopsy")
-plt.ylabel("Count")
 # save the figure for inclusion in the project report and poster
 plt.savefig("biopsy_results.png")
 # close the figure to prepare for the next visualization
@@ -103,12 +110,16 @@ age_table = pd.crosstab(df["Age_Group"], df["Biopsy"], normalize="index") * 100
 
 # create a bar chart showing biopsy positivity percentages across age groups
 age_table[1].plot(kind="bar")
+# add percentage labels above each bar
+for i, value in enumerate(age_table[1]):
+    plt.text(i, value + 0.2, f"{value:.1f}%", ha="center")
 # add chart labels and titles
 plt.title("Biopsy Positivity by Age Group")
 plt.xlabel("Age Group")
 plt.ylabel("Percent Positive")
 # save the figure for inclusion in the project report and poster
-plt.savefig("age_group_results.png")
+plt.tight_layout()
+plt.savefig("age_group_results.png", bbox_inches="tight")
 # close the figure to prepare for the next visualization
 plt.close()
 
@@ -166,12 +177,23 @@ contraceptive_table = (
 print(contraceptive_table)
 
 # create a bar chart showing the percentage of women with positive biopsy results in each contraceptive-use group
-contraceptive_table[1].plot(kind="bar")
+contraceptive_table.plot(
+    kind="bar", stacked=True, color=["#4C72B0", "#D62728"], figsize=(8, 5)
+)
+for i, row in enumerate(contraceptive_table.values):
+    negative = row[0]
+    positive = row[1]
 
+    plt.text(i, negative / 2, f"{negative:.1f}%", ha="center", color="white")
+
+    plt.text(i, negative + positive / 2, f"{positive:.1f}%", ha="center", color="white")
 # add chart labels and titles
 plt.title("Biopsy Results by Hormonal Contraceptive Use")
 plt.xlabel("Hormonal Contraceptive Use")
-plt.ylabel("Percent positive")
+plt.ylabel("Percent of Participants")
+plt.xticks([0, 1], ["No", "Yes"], rotation=0)
+plt.legend(["Negative", "Positive"], title="Biopsy Result")
+
 # save the figure for inclusion in the project report and poster
 plt.savefig("contraception_results_percent.png")
 # close the figure to prepare for the next visualization
