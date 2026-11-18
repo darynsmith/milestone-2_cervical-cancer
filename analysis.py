@@ -26,7 +26,7 @@ print(df.info())
 # Data cleaning and missing value assessment
 # ==========================================================
 
-# replace all "?" entries with NaN (Not a Number), using pandas to recognize as a missing value
+# replace all "?" entries with missing values, using pandas to recognize as a missing value
 df.replace("?", np.nan, inplace=True)
 # count the number of missing values in each variable to identify data quality issues before analysis
 print(df.isnull().sum())
